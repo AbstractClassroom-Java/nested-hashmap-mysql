@@ -19,6 +19,7 @@ public record UserInformation(
         );
     }
 
+    @Override
     public String toString() {
         return toString(0);
     }

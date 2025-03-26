@@ -7,14 +7,15 @@ public class StateDataFetcher {
 
     // Remote MySQL database details (change these!)
     private static final String DB_URL = "jdbc:mysql://cse-335-spring-2025.cluster-c924km8o85q2.us-east-1.rds.amazonaws.com";
-    private static final String DB_USER = "dbuser";
-    private static final String DB_PASSWORD = "dbpass";
+    private static final String DB_USER = "readonly_user";
+    private static final String DB_PASSWORD = "StrongPassword123!";
 
     // Track which states to fetch
     private final Set<String> statesToFetch = new HashSet<>();
 
     // Nested map: state → employer → ssn → UserInformation
     private final Map<String, Map<String, Map<String, UserInformation>>> recordsMap = new HashMap<>();
+
 
     // Add a state to filter
     public void addState(String state) {
@@ -30,7 +31,7 @@ public class StateDataFetcher {
 
         // Build SQL query with placeholders
         String placeholders = String.join(",", Collections.nCopies(statesToFetch.size(), "?"));
-        String sql = "SELECT firstName, lastName, ssn, state, employer FROM users WHERE state IN (" + placeholders + ")";
+        String sql = "SELECT firstName, lastName, ssn, state, employer FROM fake_data_nathan.users WHERE state IN (" + placeholders + ")";
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -65,8 +66,5 @@ public class StateDataFetcher {
     public Map<String, Map<String, Map<String, UserInformation>>> getRecordsMap() {
         return recordsMap;
     }
-
-    // ✅ Record class for user data
-    public record UserInformation(String firstName, String lastName, String ssn, String state, String employer) {}
 
 }
